@@ -6,7 +6,14 @@
 	"background": {
     "service_worker": "background.js"
   },
+	"host_permissions": ["<all_urls>"],
 	"permissions": ["storage", "activeTab", "scripting", "tabs"],
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"js": ["content.js"]
+		}
+	],
 	"action": {
     "default_popup": "popup.html",
 		"default_icon": {
