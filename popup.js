@@ -56,8 +56,13 @@ document.addEventListener('DOMContentLoaded', () => {
       // 3- Extract minutes:
       var minutes = parseInt( seconds / 60 ); // 60 seconds in 1 minute
       // 4- Keep only seconds not extracted to minutes:
+      let returned ; 
       seconds = seconds % 60;
-      return `${hours+":"}${minutes+":"}${seconds}`;
+      if(hours === 0) {
+        returned = (minutes === 0) ?  `${seconds}s` : `${minutes+":"} m ${seconds} s`;
+      } 
+      else returned = `${hours+":"}h ${minutes+":"}m ${seconds}s`;
+      return returned;
   }
 
     // now we have our session lists full of objects
