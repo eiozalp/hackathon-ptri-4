@@ -1,9 +1,15 @@
 import { Chart, PieController, LinearScale, ArcElement } from 'chart.js';
+import ChartDataLabels from 'chartjs-plugin-datalabels';
 
-Chart.register(LinearScale, PieController, ArcElement)
+Chart.register(LinearScale, PieController, ArcElement, ChartDataLabels);
 
 var ctx = document.getElementById('myChart');
 export default function makeChart(sorted, total) {
+
+  // const labels = sorted.reduce((acc, cur) => {
+	// 	if (!cur in acc) acc[cur] = {}
+	// 	return acc
+	// }, {})
 	console.log(sorted)
   return new Chart(ctx, {
 			type: 'doughnut',
@@ -14,7 +20,6 @@ export default function makeChart(sorted, total) {
 			data: {
 					labels: sorted,
 					datasets: [{
-							label: 'Sites by total usage',
 							data: [
 								total[sorted[0]],
 								total[sorted[1]],
@@ -42,10 +47,33 @@ export default function makeChart(sorted, total) {
 			},
 			options: {
 				plugins: {
+					datalabels: {
+						display: true,
+						backgroundColor: '#ccc',
+						borderRadius: 3,
+						font: {
+							color: 'red',
+							weight: 'bold',
+						}
+					},
+					doughnutlabel: {
+						labels: [{
+							text: '550',
+							font: {
+								size: 20,
+								weight: 'bold'
+							}
+						}, {
+							text: 'total'
+						}]
+					},
 					legend: {
 						display: true,
 						position: 'bottom',
-						align: 'center'
+						labels: {},
+						title: {
+							display: true
+						}
 					}
 				}
       }
