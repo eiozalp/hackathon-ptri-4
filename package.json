@@ -5,7 +5,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "parcel build manifest.json",
-
     "build:parcel": "parcel build ./*.html ./background.js --dist-dir dist",
     "build:cpx-top": "cpx './*.{json,png,svg}' dist",
     "build:cpx-images": "cpx './images/*.{png,svg}' dist/images",
@@ -27,5 +26,8 @@
     "cpx": "^1.5.0",
     "npm-run-all": "^4.1.5",
     "parcel": "^2.0.0-beta.3.1"
+  },
+  "dependencies": {
+    "chart.js": "^3.4.1"
   }
 }

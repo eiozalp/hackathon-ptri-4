@@ -14,6 +14,23 @@ body {
   font-weight: 600;
 }
 
+.canvas--shell {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+  padding: 10px;
+}
+
+.canvas--container {
+  width: 300px;
+  padding: 10px;
+  overflow: visible;
+}
+
+#myChart {
+  padding: 10px;
+}
+
 .site--block {
   border: 1px solid rgba(0,0,0,0.2);
   border-radius: 4px;

@@ -1,3 +1,5 @@
+import makeChart from './chart'
+
 // Initialize button with user's preferred color
 const popup = document.querySelector('#app')
 document.addEventListener('DOMContentLoaded', () => {
@@ -13,15 +15,15 @@ document.addEventListener('DOMContentLoaded', () => {
           console.log(`Current duration of final session for ${ curr.url }: `, curr.duration)
           return acc + (curr.duration ?? (new Date()).getTime() - curr.start); 
         }, 0)
-        total[key] = sum
+        total[key] = sum;
       }
 
       // TODO: Improve efficiency as stretch goal -> may be inefficient as is
-      const sorted = Object.keys(total).sort((a, b) => total[b] - total[a])
+      const sorted = Object.keys(total).sort((a, b) => total[b] - total[a]);
 
       chrome.storage.sync.get(['favicons'], ({ favicons }) => {
         // create dom elements and mount them to the popup div (#app)
-        let popupHTML = ''
+        let popupHTML = '';
         for (let i = 0; i < (sorted.length < 5 ? sorted.length : 5); i++) {
           const data = {
             url: sorted[i],
@@ -38,10 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
           `
 
-          popupHTML += el
+          popupHTML += el;
         }
-        popup.innerHTML = popupHTML
+        popup.innerHTML = popupHTML;
 
+        makeChart(sorted, total);
       })
     })
 
