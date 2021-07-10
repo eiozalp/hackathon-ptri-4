@@ -2,9 +2,6 @@
 const popup = document.querySelector('#app')
 document.addEventListener('DOMContentLoaded', () => {
   chrome.storage.sync.get(['keys'], ({ keys }) => {
-    // Now we've got the keys
-
-    // loops through keys (urls) or maybe... just pass entire array as argument to get
     chrome.storage.sync.get(keys, (sessionLists) => {
       const total = {};
       //key : [{duration: },{}]
@@ -13,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const sum = sessionLists[key].reduce((acc,curr) => {
           // { duration: 1234, start: 12341234, end: 12341234, url: 'google.com' }
           //check if the duration is null 
+          console.log(`Current duration of final session for ${ curr.url }: `, curr.duration)
           return acc + (curr.duration ?? (new Date()).getTime() - curr.start); 
         }, 0)
         total[key] = sum
@@ -31,9 +29,9 @@ document.addEventListener('DOMContentLoaded', () => {
           }
 
           const el = /* html */`
-            <div>
+            <div class="site--block">
               <div style="display: flex; align-items: center; justify-content: flex-start;">
-                <img style="width: 40px;" src="${favicons[sorted[i]]}">
+                <img style="width: 30px;" src="${favicons[sorted[i]]}">
                 <h2 class="site--title">${data.url}</h2>
               </div>
               <sub class="site--sub">${data.duration}</sub>
@@ -59,66 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
       let returned ; 
       seconds = seconds % 60;
       if(hours === 0) {
-        returned = (minutes === 0) ?  `${seconds}s` : `${minutes+":"} m ${seconds} s`;
+        returned = (minutes === 0) ?  `${seconds.toFixed()}s` : `${minutes.toFixed()+":"} m ${seconds.toFixed()} s`;
       } 
-      else returned = `${hours+":"}h ${minutes+":"}m ${seconds}s`;
+      else returned = `${hours.toFixed()+":"}h ${minutes.toFixed()+":"}m ${seconds.toFixed()}s`;
       return returned;
   }
-
-    // now we have our session lists full of objects
-    // create new output object
-      // { 'google.com': [{duration, start, end, url}, {}], 'netflix.com': [{}, {}] } 
-      // reduce each session list for each key
-
-    // [{}, {}, {}, {}, {}]
-
   })
-
-/*
-
-The Plan:
-
-1. How do we get the data?
-  - Fetch keys // 'keys' 
-  - Use chrome.storage to get the keys
-2. When exactly do we fetch the data and perform calculations?
-  - When the icon is clicked (the extension icon)
-	- Wbat is the event for this? DOMContentLoaded?
-3. Display considerations
-  - How do we show it?
-
-*/
-
-
-
 })
-
-// let button = document.getElementById("changeColor");
-// button.addEventListener('click', () => {
-//   console.log('button clicked')
-// })
-
-// chrome.storage.sync.get("color", ({ color }) => {
-//   changeColor.style.backgroundColor = color;
-// });
-
-
-// When the button is clicked, inject setPageBackgroundColor into current page
-// button.addEventListener("click", async () => {
-//   let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-//   chrome.scripting.executeScript({
-//     target: { tabId: tab.id },
-//     function: setPageBackgroundColor,
-//   });
-// });
-
-// chrome.action.onClicked.addListener((action) => {
-//   console.log('clicked')
-// })
-
-// // // The body of this function will be executed as a content script inside the
-// // // current page
-// function setPageBackgroundColor() {
-//   document.querySelector('#app').innerHTML = 'Hello!'
-//   console.log('clicked')
-// }

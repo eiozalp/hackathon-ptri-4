@@ -54,6 +54,7 @@ function processChangeEvent(tab) {
 		const url = parseUrl(tab.url)
 		console.log(url) // google.com, netflix.com => docs.google.com === mail.google.com
 
+		console.log(`Tab change event. Current session: ${currentSession}. New session: ${url}.`)
 		if (currentSession === url) return // if changing the page to the same url (host), do nothing e.g., google.com/dogs => google.com/cats
 
 		endCurrentSession(currentSession)
@@ -79,7 +80,6 @@ function processChangeEvent(tab) {
 				chrome.storage.sync.get(['favicons'], ({ favicons }) => {
 					if (!(url in favicons)) favicons[url] = tab.favIconUrl
 					chrome.storage.sync.set({ favicons })
-					console.log(favicons)
 				})
 			} else {
 				chrome.storage.sync.get([url], (result) => {
