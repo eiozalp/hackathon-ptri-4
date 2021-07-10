@@ -1,6 +1,15 @@
 body {
   margin: 0;
   padding: 0;
+  min-height: 500px;
+}
+
+.site--title {
+  margin-left: 10px;
+}
+
+#app {
+  padding: 10px;
 }
 
 #logo {

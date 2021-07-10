@@ -1,10 +1,19 @@
+
+// chrome.action.onClicked.addListener((action) => {
+// 	console.log('action occurred: ', action)
+// })
+
 chrome.runtime.onInstalled.addListener(() => {
 	chrome.storage.sync.set({ 'keys': [] })
+	chrome.storage.sync.set({ 'favicons': {} })
 });
 
 chrome.runtime.onStartup.addListener(async () => {
 	chrome.storage.sync.get('keys', (result) => {
 		if (!result) chrome.storage.sync.set({ 'keys': [] })
+	})
+	chrome.storage.sync.get('favicons', (result) => {
+		if (!result) chrome.storage.sync.set({ 'favicons': {} })
 	})
 })
 
@@ -33,11 +42,14 @@ function endCurrentSession(url) {
 }
 
 function parseUrl(url) {
-	return (new URL(url)).hostname.split('.').slice(1).join('.') // docs.google.com != mail.google.com
+	url = (new URL(url)).hostname.split('.') // docs.google.com != mail.google.com
+	if (url.length > 2) url = url.slice(1)
+	return url.join('.')
 }
 
 function processChangeEvent(tab) {
 	if (tab.status === 'complete') {
+		// favIconUrl
 		// currently, tab.url === the entire path rather than just the host
 		const url = parseUrl(tab.url)
 		console.log(url) // google.com, netflix.com => docs.google.com === mail.google.com
@@ -52,7 +64,7 @@ function processChangeEvent(tab) {
 			url: url,
 			start: (new Date()).getTime(),
 			end: null,
-			duration: null
+			duration: null,
 		}
 
     // make sure that if it's a new URL, it's in our keys list
@@ -62,9 +74,13 @@ function processChangeEvent(tab) {
 				keys.push(url)
 				// save the keys back into the storage
 				chrome.storage.sync.set({ keys })
-
 				// if we're here, set an empty array for the new key
 				chrome.storage.sync.set({ [url]: [session] })
+				chrome.storage.sync.get(['favicons'], ({ favicons }) => {
+					if (!(url in favicons)) favicons[url] = tab.favIconUrl
+					chrome.storage.sync.set({ favicons })
+					console.log(favicons)
+				})
 			} else {
 				chrome.storage.sync.get([url], (result) => {
 					const sessions = result[url]
