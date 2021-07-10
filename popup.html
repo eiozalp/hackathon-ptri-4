@@ -8,8 +8,13 @@
 			<div style="display: flex;align-items: center; justify-content: center">
 			  <img src="./images/logo-2.svg" id="logo"><div class="banner--text">Chrometime</div>
 			</div>
+			<div>
+                <canvas id="chart"></canvas>
+            </div>
 		</header>
 		<div id="app"></div>
 		<script src="popup.js"></script>
+		<meta http-equiv="Content-Security-Policy" content="default-src *; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' 'unsafe-eval'  https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.min.js">
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.4.1/chart.min.js" integrity="sha512-5vwN8yor2fFT9pgPS9p9R7AszYaNn0LkQElTXIsZFCL7ucT8zDCAqlQXDdaqgA1mZP47hdvztBMsIoFxq/FyyQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
   </body>
 </html>

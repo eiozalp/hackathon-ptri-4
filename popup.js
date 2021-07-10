@@ -59,9 +59,9 @@ document.addEventListener('DOMContentLoaded', () => {
       let returned ; 
       seconds = seconds % 60;
       if(hours === 0) {
-        returned = (minutes === 0) ?  `${seconds}s` : `${minutes+":"} m ${seconds} s`;
+        returned = (minutes === 0) ?  `${seconds}s` : `${minutes} m ${seconds} s`;
       } 
-      else returned = `${hours+":"}h ${minutes+":"}m ${seconds}s`;
+      else returned = `${hours}h ${minutes}m ${seconds}s`;
       return returned;
   }
 
