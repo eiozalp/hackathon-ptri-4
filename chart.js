@@ -54,7 +54,10 @@ export default function makeChart(sorted, total) {
 						font: {
 							color: 'red',
 							weight: 'bold',
-						}
+						},
+                        formatter: function(value, context) {
+                            return context.chart.data.labels[context.dataIndex];
+                        }
 					},
 					doughnutlabel: {
 						labels: [{
