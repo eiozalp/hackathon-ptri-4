@@ -57,9 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
       let returned ; 
       seconds = seconds % 60;
       if(hours === 0) {
-        returned = (minutes === 0) ?  `${seconds.toFixed()}s` : `${minutes.toFixed()+":"} m ${seconds.toFixed()} s`;
+        returned = (minutes === 0) ?  `${seconds.toFixed()} s` : `${minutes.toFixed()} m ${seconds.toFixed()} s`;
       } 
-      else returned = `${hours.toFixed()+":"}h ${minutes.toFixed()+":"}m ${seconds.toFixed()}s`;
+      else returned = `${hours.toFixed()} h ${minutes.toFixed()} m ${seconds.toFixed()} s`;
       return returned;
   }
   })

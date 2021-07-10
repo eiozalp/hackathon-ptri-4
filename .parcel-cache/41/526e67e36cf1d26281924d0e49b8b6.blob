@@ -1,0 +1,109 @@
+// chrome.action.onClicked.addListener((action) => {
+// 	console.log('action occurred: ', action)
+// })
+chrome.runtime.onInstalled.addListener(()=>{
+    chrome.storage.sync.set({
+        'keys': []
+    });
+    chrome.storage.sync.set({
+        'favicons': {
+        }
+    });
+});
+chrome.runtime.onStartup.addListener(async ()=>{
+    chrome.storage.sync.get('keys', (result)=>{
+        if (!result) chrome.storage.sync.set({
+            'keys': []
+        });
+    });
+    chrome.storage.sync.get('favicons', (result)=>{
+        if (!result) chrome.storage.sync.set({
+            'favicons': {
+            }
+        });
+    });
+});
+let $e3b780f727fd378eb97bc4a3f8d42907$var$currentSession;
+chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab)=>{
+    $e3b780f727fd378eb97bc4a3f8d42907$var$processChangeEvent(tab);
+});
+chrome.tabs.onActivated.addListener(async (tabInfo)=>{
+    const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true
+    });
+    $e3b780f727fd378eb97bc4a3f8d42907$var$processChangeEvent(tab);
+});
+function $e3b780f727fd378eb97bc4a3f8d42907$var$endCurrentSession(url) {
+    url && chrome.storage.sync.get([
+        url
+    ], (result)=>{
+        const sessions = result[url];
+        const latestSession = sessions[sessions.length - 1];
+        latestSession.end = new Date().getTime();
+        latestSession.duration = latestSession.end - latestSession.start;
+        sessions[sessions.length - 1] = latestSession;
+        chrome.storage.sync.set({
+            [url]: sessions
+        });
+        console.log(sessions);
+    });
+}
+function $e3b780f727fd378eb97bc4a3f8d42907$var$parseUrl(url) {
+    url = new URL(url).hostname.split('.'); // docs.google.com != mail.google.com
+    if (url.length > 2) url = url.slice(1);
+    return url.join('.');
+}
+function $e3b780f727fd378eb97bc4a3f8d42907$var$processChangeEvent(tab) {
+    if (tab.status === 'complete') {
+        // favIconUrl
+        // currently, tab.url === the entire path rather than just the host
+        const url = $e3b780f727fd378eb97bc4a3f8d42907$var$parseUrl(tab.url);
+        console.log(url); // google.com, netflix.com => docs.google.com === mail.google.com
+        console.log(`Tab change event. Current session: ${$e3b780f727fd378eb97bc4a3f8d42907$var$currentSession}. New session: ${url}.`);
+        if ($e3b780f727fd378eb97bc4a3f8d42907$var$currentSession === url) return; // if changing the page to the same url (host), do nothing e.g., google.com/dogs => google.com/cats
+        $e3b780f727fd378eb97bc4a3f8d42907$var$endCurrentSession($e3b780f727fd378eb97bc4a3f8d42907$var$currentSession);
+        $e3b780f727fd378eb97bc4a3f8d42907$var$currentSession = url;
+        const session = {
+            url: url,
+            start: new Date().getTime(),
+            end: null,
+            duration: null
+        };
+        // make sure that if it's a new URL, it's in our keys list
+        chrome.storage.sync.get([
+            'keys'
+        ], ({ keys: keys  })=>{
+            // now you have acces to the keys
+            if (!keys.includes(url)) {
+                keys.push(url);
+                // save the keys back into the storage
+                chrome.storage.sync.set({
+                    keys: keys
+                });
+                // if we're here, set an empty array for the new key
+                chrome.storage.sync.set({
+                    [url]: [
+                        session
+                    ]
+                });
+                chrome.storage.sync.get([
+                    'favicons'
+                ], ({ favicons: favicons  })=>{
+                    if (!(url in favicons)) favicons[url] = tab.favIconUrl;
+                    chrome.storage.sync.set({
+                        favicons: favicons
+                    });
+                });
+            } else chrome.storage.sync.get([
+                url
+            ], (result)=>{
+                const sessions = result[url];
+                sessions.push(session);
+                chrome.storage.sync.set({
+                    [url]: sessions
+                });
+            });
+        });
+    }
+}
