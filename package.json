@@ -1,0 +1,25 @@
+{
+  "name": "hackathon",
+  "version": "1.0.0",
+  "description": "1. Get the data   - The Data: The path: https://example.com. Categorization+ : Page content (including meta). 2. Establish mechanism to determine path change.   - { active: true, currentWindow: true } <- count that 3. Store sites and time as key/value pairs:   - { [css-tricks.com]: 2345236 } 4. Create UI to view results   - Initially, just render the raw values. \t- Nice to have: Chart.js analytics.",
+  "main": "background.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "parcel build manifest.json --dist-dir dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jackvhall/hackathon-ptri-4.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jackvhall/hackathon-ptri-4/issues"
+  },
+  "homepage": "https://github.com/jackvhall/hackathon-ptri-4#readme",
+  "devDependencies": {
+    "@parcel/config-webextension": "^2.0.0-nightly.2151",
+    "parcel": "^2.0.0-beta.3.1"
+  }
+}
