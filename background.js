@@ -1,6 +1,3 @@
-// let color = '#3aa757';
-
-
 chrome.runtime.onInstalled.addListener(() => {
 	chrome.storage.sync.set({ 'keys': [] })
 });
@@ -14,15 +11,39 @@ chrome.runtime.onStartup.addListener(async () => {
 let currentSession;
 
 chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
-	if (tab.status === 'loading' && !tab.favIconUrl) {
+	processChangeEvent(tab);
+})
 
+chrome.tabs.onActivated.addListener(async (tabInfo) => {
+	const [tab] = await chrome.tabs.query({ active: true, currentWindow: true})
+	processChangeEvent(tab);
+})
+
+function endCurrentSession(url) {
+	url && chrome.storage.sync.get([url], (result) => {
+		const sessions = result[url]
+		const latestSession = sessions[sessions.length - 1]
+		latestSession.end = (new Date()).getTime();
+		latestSession.duration = latestSession.end - latestSession.start;
+		sessions[sessions.length - 1] = latestSession
+		chrome.storage.sync.set({ [url]: sessions})
+
+		console.log(sessions);
+	})
+}
+
+function parseUrl(url) {
+	return (new URL(url)).hostname.split('.').slice(1).join('.') // docs.google.com != mail.google.com
+}
+
+function processChangeEvent(tab) {
+	if (tab.status === 'complete') {
 		// currently, tab.url === the entire path rather than just the host
 		const url = parseUrl(tab.url)
 		console.log(url) // google.com, netflix.com => docs.google.com === mail.google.com
 
 		if (currentSession === url) return // if changing the page to the same url (host), do nothing e.g., google.com/dogs => google.com/cats
 
-		// TODO: end the current session
 		endCurrentSession(currentSession)
 
 		currentSession = url
@@ -52,31 +73,5 @@ chrome.tabs.onUpdated.addListener(async (tabId, changeInfo, tab) => {
 				})
 			}
 		})
-
 	}
-
-	// we need to start a new timer for the target page
-	// we need to end the timer for the current page
-	// create session object -> needs url, starting time: current time
-	// timer we just ended, we need to record in the session that just ended
-
-})
-
-chrome.tabs.onActivated.addListener((arg1, arg2, arg3) => {
-	console.log('Tab activated! ', arg1, arg2, arg3);
-})
-
-
-function endCurrentSession(url) {
-	url && chrome.storage.sync.get([url], (result) => {
-		const sessions = result[url]
-		const latestSession = sessions[sessions.length - 1]
-		latestSession.end = (new Date()).getTime();
-		latestSession.duration = latestSession.end - latestSession.start;
-		console.log(sessions);
-	})
-}
-
-function parseUrl(url) {
-	return (new URL(url)).hostname.split('.').slice(1).join('.') // docs.google.com != mail.google.com
 }
